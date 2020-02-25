@@ -1,0 +1,15 @@
+dependencies {
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.45.Final'
+    compile project(':Packets')
+}
+
+jar {
+    from { configurations.runtimeClasspath.collect { zipTree(it) } }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'ru.undframe.testclient.Main'
+    }
+}

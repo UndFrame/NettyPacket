@@ -1,0 +1,6 @@
+rootProject.name = 'CSAPP'
+include 'Tower'
+include 'Client'
+include 'Client'
+include 'Packets'
+
