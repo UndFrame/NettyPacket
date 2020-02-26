@@ -18,22 +18,29 @@ public class ClientDecoder extends ByteToMessageDecoder{
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) { // (2)
         byte oldByte = 0;
-        byte newByte= 0;
-        for (int i = 0; i < in.capacity(); i ++) {
+        byte newByte = 0;
+        System.out.println();
+        System.out.println("decode "+in.capacity());
+        int size = 0;
+        for (int i = 0; i < in.capacity(); i++) {
             oldByte = newByte;
             newByte = in.getByte(i);
-            if(newByte == -128 && oldByte == 127){
-                ByteBuf byteBuf = in.readSlice(i + 1);
+            System.out.print(newByte+" : ");
+            if (newByte == -128 && oldByte == 127) {
+                System.out.print(" {"+size+":"+i+"} ");
+                ByteBuf byteBuf = in.readSlice(size + 1);
                 byte oneHash = byteBuf.getByte(0);
                 byte twoHash = byteBuf.getByte(1);
-                ByteBuf bytes = byteBuf.slice(2, i - 3);
-
+                ByteBuf bytes = byteBuf.slice(2, size - 3);
                 byte[] arrsyBytes = new byte[bytes.capacity()];
-                for (int i1 = 0; i1 < bytes.capacity(); i1 ++) {
+                for (int i1 = 0; i1 < bytes.capacity(); i1++) {
                     arrsyBytes[i1] = bytes.getByte(i1);
                 }
-                out.add(packetManager.getPacket(oneHash,twoHash,arrsyBytes));
+
+                out.add(packetManager.getPacket(oneHash, twoHash, arrsyBytes));
+                size = -1;
             }
+            size++;
         }
     }
 }

@@ -8,7 +8,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ctx.write(new BytePacket(new byte[]{1,2,3,4,5,6})); // (1)
+        ctx.write(msg); // (1)
         System.out.println(msg.getClass().toString());
         ctx.flush(); // (2)
     }

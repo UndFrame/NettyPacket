@@ -7,6 +7,7 @@ import ru.ndframe.packets.BytePacket;
 import ru.ndframe.packets.Packet;
 import ru.ndframe.packets.StringPacket;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class ClientHandler extends ChannelInboundHandlerAdapter {
@@ -17,7 +18,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             System.out.println(stringPacket.getString());
         }else  if(msg instanceof BytePacket){
             BytePacket stringPacket = (BytePacket)msg;
-            System.out.println(Arrays.toString(stringPacket.toByte()));
+           // System.out.println(Arrays.toString(stringPacket.toByte()));
+        }else  if(msg instanceof ByteBuf){
+            ByteBuf byteBuf = (ByteBuf)msg;
+            byte[] bytes = new byte[byteBuf.capacity()];
+                for (int i = 0; i < byteBuf.capacity(); i++) {
+                    bytes[i] = byteBuf.getByte(i);
+                }
+                System.out.println(new String(bytes));
         }
     }
 
