@@ -1,6 +1,6 @@
 package ru.ndframe.packets;
 
-public class StringPacket implements Packet {
+public class StringPacket extends Packet {
 
     private String s;
 
@@ -29,5 +29,12 @@ public class StringPacket implements Packet {
     @Override
     public byte getTwoCode() {
         return 1;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+" StringPacket{" +
+                "s='" + s + '\'' +
+                '}';
     }
 }

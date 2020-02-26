@@ -1,6 +1,6 @@
 package ru.ndframe.packets;
 
-public class BytePacket implements Packet {
+public class BytePacket extends Packet {
 
     private byte[] bytes;
 
@@ -22,4 +22,5 @@ public class BytePacket implements Packet {
     public byte getTwoCode() {
         return 0;
     }
+
 }

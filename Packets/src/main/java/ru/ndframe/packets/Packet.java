@@ -1,9 +1,24 @@
 package ru.ndframe.packets;
 
-public interface Packet {
+public abstract class Packet {
 
-    byte[] toByte();
-    byte getOneCode();
-    byte getTwoCode();
+    private PacketId packetId;
+    public abstract byte[] toByte();
+    public abstract byte getOneCode();
+    public abstract byte getTwoCode();
 
+    public PacketId getPacketId(){
+        return packetId;
+    }
+
+    public void setPacketId(PacketId packetId) {
+        this.packetId = packetId;
+    }
+
+    @Override
+    public String toString() {
+        return "Packet{" +
+                "packetId=" + packetId +
+                '}';
+    }
 }

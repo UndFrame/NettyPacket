@@ -11,24 +11,21 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class ClientHandler extends ChannelInboundHandlerAdapter {
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        if(msg instanceof StringPacket){
-            StringPacket stringPacket = (StringPacket)msg;
-            System.out.println(stringPacket.getString());
-        }else  if(msg instanceof BytePacket){
-            BytePacket stringPacket = (BytePacket)msg;
-            System.out.println(Arrays.toString(stringPacket.toByte()));
-        }else  if(msg instanceof ByteBuf){
-            ByteBuf byteBuf = (ByteBuf)msg;
-            byte[] bytes = new byte[byteBuf.capacity()];
-                for (int i = 0; i < byteBuf.capacity(); i++) {
-                    bytes[i] = byteBuf.getByte(i);
-                }
-                System.out.println(new String(bytes));
-        }
+
+    private Client client;
+
+    public ClientHandler(Client client) {
+        this.client = client;
     }
 
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        if(msg instanceof Packet) {
+            Packet packet = (Packet)msg;
+            client.getCompletableFuture(packet.getPacketId()).complete(packet);
+        }
+
+    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
@@ -36,4 +33,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }
