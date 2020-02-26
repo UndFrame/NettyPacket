@@ -7,6 +7,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.ReplayingDecoder;
 import ru.ndframe.packets.BytePacket;
 import ru.ndframe.packets.Packet;
@@ -31,24 +32,7 @@ public class Main {
             b.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new ReplayingDecoder() {
-                        @Override
-                        protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-                            ByteBuf byteBuf = in.readSlice(4);
-                            ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{byteBuf.getByte(0), byteBuf.getByte(1), byteBuf.getByte(2), byteBuf.getByte(3)});
-                            out.add(in.readBytes(byteBuffer.getInt()));
-                        }
-                    }, new MessageToByteEncoder<String>() {
-                        @Override
-                        protected void encode(ChannelHandlerContext ctx, String msg, ByteBuf out) throws Exception {
-                            int length = msg.getBytes().length;
-                            ByteBuf buffer = ctx.alloc().buffer(length);
-                            byte[] array = ByteBuffer.allocate(4).putInt(length).array();
-                            buffer.writeBytes(array);
-                            buffer.writeBytes(msg.getBytes());
-                            out.writeBytes(buffer);
-                        }
-                    }, new ClientHandler());
+                    ch.pipeline().addLast(new ClientDecoder(), new ClientEncoder(), new ClientHandler());
                 }
             });
             ChannelFuture f = b.connect(host, port).sync(); // (5)
@@ -65,7 +49,7 @@ public class Main {
             Channel channel = f.channel();
 
             for (int i = 0; i < 300; i++) {
-                channel.writeAndFlush("Hello world my dear friend "+i);
+                channel.writeAndFlush(new StringPacket("hello world!!!!!"));
             }
 
             channel.closeFuture().sync();

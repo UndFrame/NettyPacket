@@ -1,13 +1,17 @@
 package ru.undframe.utils;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.ReplayingDecoder;
+import ru.ndframe.packets.Packet;
+import ru.ndframe.packets.PacketManager;
+
+import java.nio.ByteBuffer;
+import java.util.List;
 
 public class ServerTower {
 
@@ -28,7 +32,7 @@ public class ServerTower {
                     .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new ServerHandler());
+                            ch.pipeline().addLast(new ServerDecoder(),new ServerEncoder(),new ServerHandler());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)          // (5)

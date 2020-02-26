@@ -18,7 +18,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             System.out.println(stringPacket.getString());
         }else  if(msg instanceof BytePacket){
             BytePacket stringPacket = (BytePacket)msg;
-           // System.out.println(Arrays.toString(stringPacket.toByte()));
+            System.out.println(Arrays.toString(stringPacket.toByte()));
         }else  if(msg instanceof ByteBuf){
             ByteBuf byteBuf = (ByteBuf)msg;
             byte[] bytes = new byte[byteBuf.capacity()];
